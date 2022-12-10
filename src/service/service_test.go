@@ -1,6 +1,7 @@
 package service
 
 import (
+	"main/src/repo"
 	"reflect"
 	"testing"
 	"time"
@@ -43,12 +44,14 @@ func TestGetAllDays(t *testing.T) {
 		wantDays []string
 	}{
 		{
-			name:     "",
-			args:     args{
-				start: time.Time{},
-				end:   time.Time{},
+			name: "test",
+			args: args{
+				start: time.Date(2022, 10, 1, 0, 0, 0, 0, time.Local),
+				end:   time.Date(2022, 10, 3, 0, 0, 0, 0, time.Local),
 			},
-			wantDays: []string{},
+			wantDays: []string{
+				"20221001", "20221002", "20221003",
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -59,3 +62,59 @@ func TestGetAllDays(t *testing.T) {
 		})
 	}
 }
+
+func TestStr(t *testing.T) {
+	str := "20221230"
+	t.Log(str[:6])
+}
+
+func TestBucketService_Query(t *testing.T) {
+	type fields struct {
+		repo repo.IBudgetRepo
+	}
+	type args struct {
+		start time.Time
+		end   time.Time
+	}
+	tests := []struct {
+		name       string
+		fields     fields
+		args       args
+		wantBudget repo.Amount
+	}{
+		{
+			name: "",
+			fields: fields{
+				repo: &repo.BudgetRepo{
+					Data: map[repo.YearMonth]repo.BudgetData{
+						"202210": {
+							YearMonth: "202210",
+							Amount:    310,
+						},
+					},
+				},
+			},
+			args: args{
+				start: time.Date(2022, 10, 1, 0, 0, 0, 0, time.Local),
+				end:   time.Date(2022, 10, 3, 0, 0, 0, 0, time.Local),
+			},
+			wantBudget: 30,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			b := &BucketService{
+				repo: tt.fields.repo,
+			}
+			if gotBudget := b.Query(tt.args.start, tt.args.end); !reflect.DeepEqual(gotBudget, tt.wantBudget) {
+				t.Errorf("BucketService.Query() = %v, want %v", gotBudget, tt.wantBudget)
+			}
+		})
+	}
+}
+
+func TestAddDay(t *testing.T) {
+	_time := time.Date(2022, 10, 1, 0, 0, 0, 0, time.Local).AddDate(0, 0, 2)
+	t.Log(_time.Format("20060102"))
+}
+                
