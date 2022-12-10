@@ -28,7 +28,7 @@ func (b *BucketService) Query(start, end time.Time) (budget repo.Amount) {
 	}
 
 	for _, v := range GetAllDays(start, end) {
-		ymd := GetYMD(v)
+		ymd := GetYM(v)
 		days := MonthDays(ymd)
 		db := _map[repo.YearMonth(ymd)] / repo.Amount(days)
 		budget += db
@@ -36,9 +36,8 @@ func (b *BucketService) Query(start, end time.Time) (budget repo.Amount) {
 	return
 }
 
-func GetYMD(v string) string {
-	ym := v[:6]
-	return ym
+func GetYM(ymd string) string {
+	return ymd[:6]
 }
 
 func MonthDays(ym string) int {
