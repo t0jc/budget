@@ -14,7 +14,10 @@ type BucketService struct {
 	repo repo.IBudgetRepo
 }
 
-const YM = "200601"
+const (
+	YYYYMMDD = "20060102"
+	YYYYMM   = "200601"
+)
 
 // Query implements IBucketService
 func (b *BucketService) Query(start, end time.Time) (budget repo.Amount) {
@@ -41,7 +44,7 @@ func GetYM(ymd string) string {
 }
 
 func MonthDays(ym string) int {
-	t, err := time.Parse(YM, ym)
+	t, err := time.Parse(YYYYMM, ym)
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +53,7 @@ func MonthDays(ym string) int {
 
 func GetAllDays(start, end time.Time) (days []string) {
 	for t := start; t.Before(end.AddDate(0, 0, 1)); t = t.AddDate(0, 0, 1) {
-		days = append(days, t.Format("20060102"))
+		days = append(days, t.Format(YYYYMMDD))
 	}
 	return
 }
