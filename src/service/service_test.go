@@ -83,6 +83,24 @@ func TestBucketService_Query(t *testing.T) {
 		wantBudget repo.Amount
 	}{
 		{
+			name: "start > end",
+			fields: fields{
+				repo: &repo.BudgetRepo{
+					Data: map[repo.YearMonth]repo.BudgetData{
+						"202210": {
+							YearMonth: "202210",
+							Amount:    310,
+						},
+					},
+				},
+			},
+			args: args{
+				start: time.Date(2022, 10, 3, 0, 0, 0, 0, time.Local),
+				end:   time.Date(2022, 10, 2, 0, 0, 0, 0, time.Local),
+			},
+			wantBudget: 0,
+		},
+		{
 			name: "",
 			fields: fields{
 				repo: &repo.BudgetRepo{
@@ -117,4 +135,3 @@ func TestAddDay(t *testing.T) {
 	_time := time.Date(2022, 10, 1, 0, 0, 0, 0, time.Local).AddDate(0, 0, 2)
 	t.Log(_time.Format("20060102"))
 }
-                

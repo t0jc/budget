@@ -58,19 +58,6 @@ func GetAllDays(start, end time.Time) (days []string) {
 	return
 }
 
-func inMonth(target, start, end time.Time) bool {
-	if start.After(target) && end.Before(target) {
-		return true
-	}
-	if target.Year() == start.Year() && target.Month() == start.Month() {
-		return true
-	}
-	if target.Year() == end.Year() && target.Month() == end.Month() {
-		return true
-	}
-	return false
-}
-
 func NewBucketService(r repo.IBudgetRepo) IBucketService {
 	return &BucketService{
 		repo: r,
